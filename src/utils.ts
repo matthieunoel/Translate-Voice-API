@@ -20,4 +20,17 @@ export class Utils {
         }
     }
 
+    public static getDate() {
+
+        let dateOb = new Date()
+        let day = this.extendNumber(parseInt(('0' + dateOb.getDate()).slice(-2), 10), 2)
+        let month = this.extendNumber(parseInt(('0' + (dateOb.getMonth() + 1)).slice(-2), 10), 2)
+        let year = this.extendNumber(dateOb.getFullYear(), 4)
+        let hours = this.extendNumber(dateOb.getHours(), 2)
+        let minutes = this.extendNumber(dateOb.getMinutes(), 2)
+        let seconds = this.extendNumber(dateOb.getSeconds(), 2)
+
+        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+    }
+
 }
