@@ -17,15 +17,13 @@ export class VoiceController {
 
     constructor(
         private voiceService: VoiceService
-    ) {}
+    ) { }
 
+    @ContentType('application/json')
     @Get('/voice')
-    root(@Res() response: Response): IVoiceRootResult {
+    root(@Res() response: Response): Promise<IVoiceRootResult> {
         this.logger.reqLog('Request at "/voice".')
-        return {
-            name: 'Voice',
-            version: 'Voice'
-        }
+        return this.voiceService.reqVoice()
     }
 
 }

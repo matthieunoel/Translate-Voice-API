@@ -1,4 +1,7 @@
 export interface IVoiceRootResult {
-    name: any,
-    version: any
+    status: string,
+    performanceMs: number,
+    responseSize: number,
+    response?: any[]
+    errors?: any[]
 }
