@@ -6,4 +6,5 @@ db
 log
 db/**/**.*
 *.log
+.vscode
 .vscode/**.*
