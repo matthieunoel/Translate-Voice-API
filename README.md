@@ -49,7 +49,7 @@ You can configure the anthentication in "./authentication.json". The file should
   }
   ```
 
-- GET: "/getToken" (Params: login(string), password(string)): Give you a 60 minutes token.
+- GET: "/token" (Params: login(string), password(string)): Give you a 60 minutes token.
   The response looks like :
 
   ```json
@@ -77,7 +77,7 @@ You can configure the anthentication in "./authentication.json". The file should
   }
   ```
 
-- GET: "/getLogs" (Params: token(string), all(?boolean), guestId(?number), uuid(?string), dateStart(?string), dateEnd(?string)) : Permit to check logs, these parameters are options. "all" permit to see all logs, not only this month. guestId, uuid, dateStart, dateEnd are filters. dateStart and dateEnd have to be this way : "YYYY-MM-DDThh:mm:ss", for example, "2020-03-24T11:15:00".
+- GET: "/logs" (Params: token(string), all(?boolean), guestId(?number), uuid(?string), dateStart(?string), dateEnd(?string)) : Permit to check logs, these parameters are options. "all" permit to see all logs, not only this month. guestId, uuid, dateStart, dateEnd are filters. dateStart and dateEnd have to be this way : "YYYY-MM-DDThh:mm:ss", for example, "2020-03-24T11:15:00".
   The response looks like :
 
   ```

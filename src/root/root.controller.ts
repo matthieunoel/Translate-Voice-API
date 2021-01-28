@@ -32,7 +32,7 @@ export class RootController {
         }
     }
 
-    @Get('/getToken')
+    @Get('/token')
     async getToken(
         @QueryParam('login', { required: false }) login: string,
         @QueryParam('password', { required: false }) password: string
@@ -67,7 +67,7 @@ export class RootController {
     // }
 
     @ContentType('text/plain')
-    @Get('/getLogs')
+    @Get('/logs')
     async seeLogs(
         @QueryParam('token', { required: false }) token: string,
         @QueryParam('uuid') uuid: string,
