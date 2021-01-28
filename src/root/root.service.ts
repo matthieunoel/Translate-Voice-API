@@ -6,8 +6,9 @@ const Database = require('better-sqlite3')
 import { performance } from 'perf_hooks'
 import { couldStartTrivia } from 'typescript'
 import { Config } from '../app'
+import { Utils } from '../utils'
 import { IClient, IClientResult, IError, ILogin, ITokenResult, ITokenTestResponse, ITolenValidityResponse } from './root.interfaces'
-import { Logger } from './root.logSystem'
+import { Logger } from '../logSystem'
 
 export class RootService {
 
@@ -58,32 +59,7 @@ export class RootService {
             request = 'CREATE TABLE IF NOT EXISTS token(id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT, permissions NUMERIC, expiration TEXT);'
             db.prepare(request).run()
 
-            // Setting Client table and data
-            request = 'CREATE TABLE IF NOT EXISTS client(id INTEGER PRIMARY KEY AUTOINCREMENT, guid TEXT, first TEXT, last TEXT, street TEXT, city TEXT, zip NUMERIC);'
-            db.prepare(request).run()
-
             logger.log(`initDB[${uuid.slice(0, 6)}] - ` + `Table creation if don't exists executed successfully.` + ` - (${performance.now() - perfStart}ms)`)
-
-            request = 'SELECT COUNT(*) as "nbLignes" FROM client'
-            let res = db.prepare(request).all()
-
-            if (res[0].nbLignes === 0) {
-
-                logger.log(`initDB[${uuid.slice(0, 6)}] - ` + `Starting adding data from "./src/static/clients.csv"` + ` - (${performance.now() - perfStart}ms)`)
-
-                const data: any = (await fsPromise.readFile('./src/static/clients.csv')).toString().replace('guid;first;last;street;city;zip\r\n', '').split('\r\n')
-
-                // tslint:disable-next-line: prefer-for-of
-                for (let index = 0; index < data.length; index++) {
-                    const line = data[index].split(';')
-                    if (line.length >= 1) {
-                        request = `INSERT INTO client (guid, first, last, street, city, zip) VALUES ('${line[0]}', '${line[1]}', '${line[2]}', '${line[3]}', '${line[4]}', ${line[5]})`
-                        db.prepare(request).run()
-                    }
-                }
-
-                logger.log(`initDB[${uuid.slice(0, 6)}] - ` + `Data insertion : ` + ` - (${performance.now() - perfStart}ms)`)
-            }
 
             db.close()
 
@@ -263,42 +239,42 @@ export class RootService {
                 }
                 if (guid !== undefined) {
                     if (conditions === '') {
-                        conditions = ` WHERE guid='${this.formatStrForSQL(guid)}'`
+                        conditions = ` WHERE guid='${Utils.formatStrForSQL(guid)}'`
                     }
                     else {
-                        conditions += ` AND guid='${this.formatStrForSQL(guid)}'`
+                        conditions += ` AND guid='${Utils.formatStrForSQL(guid)}'`
                     }
                 }
                 if (first !== undefined) {
                     if (conditions === '') {
-                        conditions = ` WHERE first like '%${this.formatStrForSQL(first)}%'`
+                        conditions = ` WHERE first like '%${Utils.formatStrForSQL(first)}%'`
                     }
                     else {
-                        conditions += ` AND first like '%${this.formatStrForSQL(first)}%'`
+                        conditions += ` AND first like '%${Utils.formatStrForSQL(first)}%'`
                     }
                 }
                 if (last !== undefined) {
                     if (conditions === '') {
-                        conditions = ` WHERE last like '%${this.formatStrForSQL(last)}%'`
+                        conditions = ` WHERE last like '%${Utils.formatStrForSQL(last)}%'`
                     }
                     else {
-                        conditions += ` AND last like '%${this.formatStrForSQL(last)}%'`
+                        conditions += ` AND last like '%${Utils.formatStrForSQL(last)}%'`
                     }
                 }
                 if (street !== undefined) {
                     if (conditions === '') {
-                        conditions = ` WHERE street like '%${this.formatStrForSQL(street)}%'`
+                        conditions = ` WHERE street like '%${Utils.formatStrForSQL(street)}%'`
                     }
                     else {
-                        conditions += ` AND street like '%${this.formatStrForSQL(street)}%'`
+                        conditions += ` AND street like '%${Utils.formatStrForSQL(street)}%'`
                     }
                 }
                 if (city !== undefined) {
                     if (conditions === '') {
-                        conditions = ` WHERE city like '%${this.formatStrForSQL(city)}%'`
+                        conditions = ` WHERE city like '%${Utils.formatStrForSQL(city)}%'`
                     }
                     else {
-                        conditions += ` AND city like '%${this.formatStrForSQL(city)}%'`
+                        conditions += ` AND city like '%${Utils.formatStrForSQL(city)}%'`
                     }
                 }
                 if (zip !== undefined) {
@@ -376,8 +352,8 @@ export class RootService {
                 }
 
                 let res: string = ''
-                const month = await this.extendNumber(parseInt(('0' + (new Date(Date.now()).getMonth() + 1)).slice(-2), 10), 2)
-                const year = await this.extendNumber(new Date(Date.now()).getFullYear(), 4)
+                const month = await Utils.extendNumber(parseInt(('0' + (new Date(Date.now()).getMonth() + 1)).slice(-2), 10), 2)
+                const year = await Utils.extendNumber(new Date(Date.now()).getFullYear(), 4)
                 const actualLogPath: string = `./log/${year}-${month}.log`
 
                 let logsList: string[] = []
@@ -459,7 +435,7 @@ export class RootService {
                     for (let index = 0; index < logsList.length; index++) {
                         const log = logsList[index]
                         if (log !== '') {
-                            res += `${await this.extendNumber(index + 1, (logsList.length + 1).toString().split('').length)} - ${log}\r\n`
+                            res += `${await Utils.extendNumber(index + 1, (logsList.length + 1).toString().split('').length)} - ${log}\r\n`
                         }
                     }
 
@@ -569,21 +545,6 @@ export class RootService {
         })
     }
 
-    private async extendNumber(value: number, extraZero: any) {
-        const valueStr: string = value.toString()
-        if (valueStr.length < extraZero) {
-            let zeroStr: string = ''
-            for (let index = 0; index < extraZero - valueStr.length; index++) {
-                zeroStr += '0'
-            }
-            return zeroStr + valueStr
-        }
-        else {
-            // this.logger.warn(`It would be time to purge the base, this warning appears only if the id value is higher than a number with ${extraZero} numerals`)
-            return valueStr
-        }
-    }
-
     private async testToken(token: string, permissionAsked: number, onlyBooleanReturn: boolean): Promise<boolean | ITokenTestResponse> {
 
         return new Promise<boolean | ITokenTestResponse>((resolve, reject) => {
@@ -595,7 +556,7 @@ export class RootService {
 
                 let validity: boolean
 
-                token = this.formatStrForSQL(token)
+                token = Utils.formatStrForSQL(token)
 
                 const db = new Database(Config.dbName)
                 const request: string = `SELECT permissions, expiration FROM token WHERE token = '${token}';`
@@ -634,11 +595,5 @@ export class RootService {
 
         })
     }
-
-    // To prevent some SQL Injections
-    private formatStrForSQL(input: string): string {
-        return decodeURIComponent(input).replace(/'/g, '\'\'')
-    }
-
 
 }

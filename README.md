@@ -77,29 +77,6 @@ You can configure the anthentication in "./authentication.json". The file should
   }
   ```
 
-- GET: "/getClients" (Params: token(string), id(?number), guid(?string), first(?string), last(?string), street(?string), city(?string), zip(?number)): Permit to get a list of the clients in functions of the parameters.
-  The response looks like :
-
-  ```json
-  {
-      "status": "OK",
-      "performanceMs": 141.21329998970032,
-      "responseSize": 1030,
-      "response": [
-          {
-              "id": 1,
-              "guid": "a6f56a46-b913-5519-9466-ea7c03ff21c7",
-              "first": "Eugene",
-              "last": "Love",
-              "street": "Diere Lane",
-              "city": "Ivsekeg",
-              "zip": 54650
-          },
-          ...
-      ]
-  }
-  ```
-
 - GET: "/getLogs" (Params: token(string), all(?boolean), guestId(?number), uuid(?string), dateStart(?string), dateEnd(?string)) : Permit to check logs, these parameters are options. "all" permit to see all logs, not only this month. guestId, uuid, dateStart, dateEnd are filters. dateStart and dateEnd have to be this way : "YYYY-MM-DDThh:mm:ss", for example, "2020-03-24T11:15:00".
   The response looks like :
 

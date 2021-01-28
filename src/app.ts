@@ -5,6 +5,7 @@ const express = require('express')
 import Container from 'typedi'
 import { ILogin } from './root/root.interfaces'
 import { RootService } from './root/root.service'
+import { VoiceController } from './voiceModule/voice.controller'
 
 useContainer(Container)
 
@@ -23,7 +24,7 @@ export class Config {
 
 const app = createExpressServer({
   cors: true,
-  controllers: [RootController]
+  controllers: [RootController, VoiceController]
 })
 
 // app.use('/spec', express.static('src/global/settings/ARM-settings'))

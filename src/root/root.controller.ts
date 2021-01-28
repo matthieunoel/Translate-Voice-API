@@ -2,7 +2,7 @@ import { Get, Res, ContentType, JsonController, QueryParam } from 'routing-contr
 import { Response } from 'express'
 import { RootService } from './root.service'
 import bodyParser = require('body-parser')
-import { Logger } from './root.logSystem'
+import { Logger } from '../logSystem'
 import { IRootResult, IClient, IClientResult, ITokenResult, ITolenValidityResponse } from './root.interfaces'
 
 const fs = require('fs')
@@ -51,20 +51,20 @@ export class RootController {
 
 
 
-    @Get('/getClients')
-    async getClients(
-        @QueryParam('token', { required: false }) token: string,
-        @QueryParam('id', { required: false }) id: number,
-        @QueryParam('guid', { required: false }) guid: string,
-        @QueryParam('first', { required: false }) first: string,
-        @QueryParam('last', { required: false }) last: string,
-        @QueryParam('street', { required: false }) street: string,
-        @QueryParam('city', { required: false }) city: string,
-        @QueryParam('zip', { required: false }) zip: number
-    ): Promise<IClientResult> {
-        this.logger.reqLog(`Request at "/getClients". Parameters are : {id: ${id}, guid: ${guid}, first: ${first}, last: ${last}, street: ${street}, city: ${city}, zip: ${zip}}`)
-        return await this.rootService.getClients(token, id, guid, first, last, street, city, zip)
-    }
+    // @Get('/getClients')
+    // async getClients(
+    //     @QueryParam('token', { required: false }) token: string,
+    //     @QueryParam('id', { required: false }) id: number,
+    //     @QueryParam('guid', { required: false }) guid: string,
+    //     @QueryParam('first', { required: false }) first: string,
+    //     @QueryParam('last', { required: false }) last: string,
+    //     @QueryParam('street', { required: false }) street: string,
+    //     @QueryParam('city', { required: false }) city: string,
+    //     @QueryParam('zip', { required: false }) zip: number
+    // ): Promise<IClientResult> {
+    //     this.logger.reqLog(`Request at "/getClients". Parameters are : {id: ${id}, guid: ${guid}, first: ${first}, last: ${last}, street: ${street}, city: ${city}, zip: ${zip}}`)
+    //     return await this.rootService.getClients(token, id, guid, first, last, street, city, zip)
+    // }
 
     @ContentType('text/plain')
     @Get('/getLogs')
