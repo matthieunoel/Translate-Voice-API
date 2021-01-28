@@ -120,7 +120,7 @@ export class RootService {
                     db.prepare(request).run()
 
                     const perfEnd = performance.now() - perfStart
-                    this.logger.log(`getToken[${uuid.slice(0, 6)}.] - ` + `Process completed successfully.` + ` - (${perfEnd}ms)`)
+                    this.logger.log(`token[${uuid.slice(0, 6)}.] - ` + `Process completed successfully.` + ` - (${perfEnd}ms)`)
                     return resolve({
                         status: 'OK',
                         performanceMs: perfEnd,
@@ -130,7 +130,7 @@ export class RootService {
                 else {
                     const perfEnd = performance.now() - perfStart
                     let errMsg = `The login or password is incorrect`
-                    this.logger.error(`getToken[${uuid.slice(0, 6)}.] - ` + errMsg + ` - (${performance.now() - perfStart}ms)`)
+                    this.logger.error(`token[${uuid.slice(0, 6)}.] - ` + errMsg + ` - (${performance.now() - perfStart}ms)`)
                     return reject({
                         'status': 'KO',
                         'performanceMs': perfEnd,
@@ -144,7 +144,7 @@ export class RootService {
 
             } catch (error) {
                 const perfEnd = performance.now() - perfStart
-                this.logger.error(`getToken[${uuid.slice(0, 6)}.] - ` + error.name + ' ' + error.message + ` - (${perfEnd}ms)`)
+                this.logger.error(`token[${uuid.slice(0, 6)}.] - ` + error.name + ' ' + error.message + ` - (${perfEnd}ms)`)
                 return reject({
                     'status': 'KO',
                     'performanceMs': perfEnd,
@@ -160,168 +160,168 @@ export class RootService {
         })
     }
 
-    public async getClients(token: string, id: number, guid: string, first: string, last: string, street: string, city: string, zip: number): Promise<IClientResult> {
+    // public async getClients(token: string, id: number, guid: string, first: string, last: string, street: string, city: string, zip: number): Promise<IClientResult> {
 
-        const perfStart = performance.now()
-        const uuid: string = uuidv1()
+    //     const perfStart = performance.now()
+    //     const uuid: string = uuidv1()
 
-        return new Promise<IClientResult>(async (resolve, reject) => {
+    //     return new Promise<IClientResult>(async (resolve, reject) => {
 
-            try {
+    //         try {
 
-                const db = new Database(Config.dbName)
-                let request: string = ''
-                let conditions: string = ''
-                let errors: IError[] = []
+    //             const db = new Database(Config.dbName)
+    //             let request: string = ''
+    //             let conditions: string = ''
+    //             let errors: IError[] = []
 
-                if (Config.authentication) {
-                    if (!(await this.testToken(token, 10, true))) {
-                        const perfEnd = performance.now() - perfStart
-                        let errMsg = `The token is invalid or don't have the right permissions.`
-                        if (token === undefined) {
-                            errMsg = `The token is missing.`
-                        }
-                        this.logger.error(`getClients[${uuid.slice(0, 6)}.] - ` + errMsg + ` - (${performance.now() - perfStart}ms)`)
-                        return reject({
-                            'status': 'KO',
-                            'performanceMs': perfEnd,
-                            'responseSize': 0,
-                            'errors': [{
-                                code: 12,
-                                message: errMsg
-                            }]
-                        })
-                    }
-                }
+    //             if (Config.authentication) {
+    //                 if (!(await this.testToken(token, 10, true))) {
+    //                     const perfEnd = performance.now() - perfStart
+    //                     let errMsg = `The token is invalid or don't have the right permissions.`
+    //                     if (token === undefined) {
+    //                         errMsg = `The token is missing.`
+    //                     }
+    //                     this.logger.error(`clients[${uuid.slice(0, 6)}.] - ` + errMsg + ` - (${performance.now() - perfStart}ms)`)
+    //                     return reject({
+    //                         'status': 'KO',
+    //                         'performanceMs': perfEnd,
+    //                         'responseSize': 0,
+    //                         'errors': [{
+    //                             code: 12,
+    //                             message: errMsg
+    //                         }]
+    //                     })
+    //                 }
+    //             }
 
-                if (isNaN(id) && id !== undefined) {
-                    errors.push({
-                        code: 21,
-                        message: `La valeur passée via id n'est pas un nombre.`
-                    })
-                }
-                if (isNaN(zip) && zip !== undefined) {
-                    errors.push({
-                        code: 27,
-                        message: `La valeur passée via zip n'est pas un nombre.`
-                    })
-                }
+    //             if (isNaN(id) && id !== undefined) {
+    //                 errors.push({
+    //                     code: 21,
+    //                     message: `La valeur passée via id n'est pas un nombre.`
+    //                 })
+    //             }
+    //             if (isNaN(zip) && zip !== undefined) {
+    //                 errors.push({
+    //                     code: 27,
+    //                     message: `La valeur passée via zip n'est pas un nombre.`
+    //                 })
+    //             }
 
-                if (errors.length > 0) {
-                    const perfEnd = performance.now() - perfStart
-                    let errorMsg = ''
-                    errors.forEach((item, index) => {
-                        if (errorMsg === '') {
-                            errorMsg = errors[index].message
-                        }
-                        else {
-                            errorMsg += ', ' + errors[index].message
-                        }
-                    })
-                    this.logger.error(`getClients[${uuid.slice(0, 6)}.] - ` + errorMsg + ` - (${performance.now() - perfStart}ms)`)
-                    return reject({
-                        'status': 'KO',
-                        'performanceMs': perfEnd,
-                        'responseSize': 0,
-                        errors
-                    })
-                }
+    //             if (errors.length > 0) {
+    //                 const perfEnd = performance.now() - perfStart
+    //                 let errorMsg = ''
+    //                 errors.forEach((item, index) => {
+    //                     if (errorMsg === '') {
+    //                         errorMsg = errors[index].message
+    //                     }
+    //                     else {
+    //                         errorMsg += ', ' + errors[index].message
+    //                     }
+    //                 })
+    //                 this.logger.error(`getClients[${uuid.slice(0, 6)}.] - ` + errorMsg + ` - (${performance.now() - perfStart}ms)`)
+    //                 return reject({
+    //                     'status': 'KO',
+    //                     'performanceMs': perfEnd,
+    //                     'responseSize': 0,
+    //                     errors
+    //                 })
+    //             }
 
-                request = 'SELECT * FROM client'
+    //             request = 'SELECT * FROM client'
 
-                if (id !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE id=${id}`
-                    }
-                    else {
-                        conditions += ` AND id=${id}`
-                    }
-                }
-                if (guid !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE guid='${Utils.formatStrForSQL(guid)}'`
-                    }
-                    else {
-                        conditions += ` AND guid='${Utils.formatStrForSQL(guid)}'`
-                    }
-                }
-                if (first !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE first like '%${Utils.formatStrForSQL(first)}%'`
-                    }
-                    else {
-                        conditions += ` AND first like '%${Utils.formatStrForSQL(first)}%'`
-                    }
-                }
-                if (last !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE last like '%${Utils.formatStrForSQL(last)}%'`
-                    }
-                    else {
-                        conditions += ` AND last like '%${Utils.formatStrForSQL(last)}%'`
-                    }
-                }
-                if (street !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE street like '%${Utils.formatStrForSQL(street)}%'`
-                    }
-                    else {
-                        conditions += ` AND street like '%${Utils.formatStrForSQL(street)}%'`
-                    }
-                }
-                if (city !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE city like '%${Utils.formatStrForSQL(city)}%'`
-                    }
-                    else {
-                        conditions += ` AND city like '%${Utils.formatStrForSQL(city)}%'`
-                    }
-                }
-                if (zip !== undefined) {
-                    if (conditions === '') {
-                        conditions = ` WHERE zip = ${zip}`
-                    }
-                    else {
-                        conditions += ` AND zip = ${zip}`
-                    }
-                }
+    //             if (id !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE id=${id}`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND id=${id}`
+    //                 }
+    //             }
+    //             if (guid !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE guid='${Utils.formatStrForSQL(guid)}'`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND guid='${Utils.formatStrForSQL(guid)}'`
+    //                 }
+    //             }
+    //             if (first !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE first like '%${Utils.formatStrForSQL(first)}%'`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND first like '%${Utils.formatStrForSQL(first)}%'`
+    //                 }
+    //             }
+    //             if (last !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE last like '%${Utils.formatStrForSQL(last)}%'`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND last like '%${Utils.formatStrForSQL(last)}%'`
+    //                 }
+    //             }
+    //             if (street !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE street like '%${Utils.formatStrForSQL(street)}%'`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND street like '%${Utils.formatStrForSQL(street)}%'`
+    //                 }
+    //             }
+    //             if (city !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE city like '%${Utils.formatStrForSQL(city)}%'`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND city like '%${Utils.formatStrForSQL(city)}%'`
+    //                 }
+    //             }
+    //             if (zip !== undefined) {
+    //                 if (conditions === '') {
+    //                     conditions = ` WHERE zip = ${zip}`
+    //                 }
+    //                 else {
+    //                     conditions += ` AND zip = ${zip}`
+    //                 }
+    //             }
 
-                request += conditions + ';'
+    //             request += conditions + ';'
 
-                this.logger.log(`getClients[${uuid.slice(0, 6)}.] - ` + `Executing request : ${request}` + ` - (${performance.now() - perfStart}ms)`)
+    //             this.logger.log(`getClients[${uuid.slice(0, 6)}.] - ` + `Executing request : ${request}` + ` - (${performance.now() - perfStart}ms)`)
 
-                let res: IClient[] = db.prepare(request).all()
+    //             let res: IClient[] = db.prepare(request).all()
 
-                const perfEnd = performance.now() - perfStart
-                this.logger.log(`getClients[${uuid.slice(0, 6)}.] - ` + `Process completed successfully.` + ` - (${perfEnd}ms)`)
-                return resolve({
-                    'status': 'OK',
-                    'performanceMs': perfEnd,
-                    'responseSize': res.length,
-                    'response': res
-                })
+    //             const perfEnd = performance.now() - perfStart
+    //             this.logger.log(`getClients[${uuid.slice(0, 6)}.] - ` + `Process completed successfully.` + ` - (${perfEnd}ms)`)
+    //             return resolve({
+    //                 'status': 'OK',
+    //                 'performanceMs': perfEnd,
+    //                 'responseSize': res.length,
+    //                 'response': res
+    //             })
 
-            }
-            catch (error) {
-                // throw error
-                const perfEnd = performance.now() - perfStart
-                this.logger.error(`getClients[${uuid.slice(0, 6)}.] - ` + error.name + ' ' + error.message + ` - (${perfEnd}ms)`)
-                return reject({
-                    'status': 'KO',
-                    'performanceMs': perfEnd,
-                    'responseSize': 0,
-                    'errors': [{
-                        code: 20,
-                        message: error.name + ' ' + error.message
-                    }]
-                })
-            }
-
-
-        })
+    //         }
+    //         catch (error) {
+    //             // throw error
+    //             const perfEnd = performance.now() - perfStart
+    //             this.logger.error(`getClients[${uuid.slice(0, 6)}.] - ` + error.name + ' ' + error.message + ` - (${perfEnd}ms)`)
+    //             return reject({
+    //                 'status': 'KO',
+    //                 'performanceMs': perfEnd,
+    //                 'responseSize': 0,
+    //                 'errors': [{
+    //                     code: 20,
+    //                     message: error.name + ' ' + error.message
+    //                 }]
+    //             })
+    //         }
 
 
-    }
+    //     })
+
+
+    // }
 
     async getLogs(token: string, paramUuid: string, all: boolean, dateStart: string, dateEnd: string) {
 
@@ -338,7 +338,7 @@ export class RootService {
                         if (token === undefined) {
                             errMsg = `The token is missing.`
                         }
-                        this.logger.error(`getLogs[${uuid.slice(0, 6)}.] - ` + errMsg + ` - (${performance.now() - perfStart}ms)`)
+                        this.logger.error(`logs[${uuid.slice(0, 6)}.] - ` + errMsg + ` - (${performance.now() - perfStart}ms)`)
                         return reject({
                             'status': 'KO',
                             'performanceMs': perfEnd,
@@ -367,7 +367,7 @@ export class RootService {
                         logsList.push(...(await fsPromise.readFile(`./log/${file}`)).toString().split('\r\n'))
                     }
 
-                    this.logger.log(`getLogs[${uuid.slice(0, 6)}.] - ` + `Parameter "all" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
+                    this.logger.log(`logs[${uuid.slice(0, 6)}.] - ` + `Parameter "all" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
 
                 }
                 else {
@@ -388,7 +388,7 @@ export class RootService {
                         }
                     }
 
-                    this.logger.log(`getLogs[${uuid.slice(0, 6)}.] - ` + `Parameters "guestId" or "uuid" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
+                    this.logger.log(`logs[${uuid.slice(0, 6)}.] - ` + `Parameters "guestId" or "uuid" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
 
                 }
 
@@ -407,7 +407,7 @@ export class RootService {
                         }
                     }
 
-                    this.logger.log(`getLogs[${uuid.slice(0, 6)}.] - ` + `Parameter "dateStart" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
+                    this.logger.log(`logs[${uuid.slice(0, 6)}.] - ` + `Parameter "dateStart" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
 
                 }
 
@@ -426,7 +426,7 @@ export class RootService {
                         }
                     }
 
-                    this.logger.log(`getLogs[${uuid.slice(0, 6)}.] - ` + `Parameter "dateEnd" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
+                    this.logger.log(`logs[${uuid.slice(0, 6)}.] - ` + `Parameter "dateEnd" used succesfully` + ` - (${performance.now() - perfStart}ms)`)
 
                 }
 
@@ -444,13 +444,13 @@ export class RootService {
                 }
 
                 const perfEnd: number = performance.now() - perfStart
-                this.logger.log(`getLogs[${uuid.slice(0, 6)}.] - ` + `Process completed successfully.` + ` - (${perfEnd}ms)`)
+                this.logger.log(`logs[${uuid.slice(0, 6)}.] - ` + `Process completed successfully.` + ` - (${perfEnd}ms)`)
 
                 return resolve(res)
 
             } catch (error) {
 
-                this.logger.error(`getLogs[${uuid.slice(0, 6)}.] - ` + error.toString() + ` - (${performance.now() - perfStart}ms)`)
+                this.logger.error(`logs[${uuid.slice(0, 6)}.] - ` + error.toString() + ` - (${performance.now() - perfStart}ms)`)
                 return reject(`Erreur dans la lecture des logs : ${error.name} ${error.message}`)
 
             }
